@@ -1,141 +1,142 @@
 export const quizQuestions = [
-  // --- 1. Phishing & Email Spoofing Defense (2 Questions) ---
   {
     id: 1,
-    topic: 'phishing',
-    domain: 'Phishing Defense',
-    question: 'You receive an urgent email from "IT-Support@corp-security-portal.com" requesting password verification within 15 minutes. What is the safest immediate action?',
+    topic: "phishing",
+    question: "You receive an urgent email from 'support@paypa1-security.com' claiming your account is locked. What is the immediate correct action?",
     options: [
-      'Report the email via the official PhishAlarm plugin and alert SOC directly.',
-      'Click the link immediately to prevent account suspension.',
-      'Forward the message to your team members asking if it looks legit.',
-      'Reply directly asking the sender to prove their identity.'
+      "Click the verification link immediately to unlock it",
+      "Inspect the sender SMTP domain and report as phishing to SOC",
+      "Reply asking for proof of identity",
+      "Forward the email to all colleagues"
     ],
-    correctAnswer: 0
+    correctAnswer: 1,
+    simpleExplanation: "Fake letters or numbers in the domain name (like 'paypa1' instead of 'paypal') indicate a spoofing attempt. Never click urgent links.",
+    technicalExplanation: "Adversaries register typosquatted domains lacking valid SPF/DKIM records. Inspecting raw MIME headers reveals deceptive SMTP envelope-from headers."
   },
   {
     id: 2,
-    topic: 'phishing',
-    domain: 'Phishing Defense',
-    question: 'An invoice email contains a password-protected ZIP file and requests enabling macros in Excel to view payment details. What should you do?',
+    topic: "phishing",
+    question: "An email contains an attached invoice named 'Invoice_Aug2026.pdf.exe'. What indicates this is malicious?",
     options: [
-      'Enable macros only if your antivirus scan returns clean.',
-      'Extract the file, verify macros are disabled, and forward to accounting.',
-      'Treat the password-protected attachment as malicious and quarantine via security operations.',
-      'Open the document inside an incognito browser window.'
+      "The file size is too small",
+      "It has a double extension hiding an executable payload",
+      "PDFs cannot be sent via email",
+      "It is addressed to the billing team"
     ],
-    correctAnswer: 2
+    correctAnswer: 1,
+    simpleExplanation: "Attackers add fake extensions like .pdf in front of .exe so Windows hides the dangerous executable program.",
+    technicalExplanation: "Adversaries exploit default OS extension-hiding behaviors (Hide File Extensions for Known Types) to mask PE32 binary execution under user-familiar document extensions."
   },
-
-  // --- 2. Zero-Trust Access & Hardware MFA (2 Questions) ---
   {
     id: 3,
-    topic: 'passwords',
-    domain: 'Zero-Trust Access & MFA',
-    question: 'An employee receives five consecutive push notifications on their mobile authenticator app at 2:00 AM without attempting a login. What attack is happening?',
+    topic: "passwords",
+    question: "Which authentication method offers the strongest defense against real-time Adversary-in-the-Middle (AiTM) phishing proxies?",
     options: [
-      'Session token replay attacks.',
-      'MFA Fatigue / Push bombing to coerce approval.',
-      'DNS Cache Poisoning on the mobile gateway.',
-      'Public key certificate expiration.'
+      "SMS-based 6-digit one-time code",
+      "Hardware-backed FIDO2 / WebAuthn security key",
+      "16-character alphanumeric password changed monthly",
+      "Email magic link verification"
     ],
-    correctAnswer: 1
+    correctAnswer: 1,
+    simpleExplanation: "Hardware keys can't be tricked by fake login pages because they talk directly to the real website via secure cryptographic handshakes.",
+    technicalExplanation: "FIDO2/WebAuthn binds authentication cryptographically to the browser's origin TLS domain, rendering stolen session cookies and reverse-proxy interception useless."
   },
   {
     id: 4,
-    topic: 'passwords',
-    domain: 'Zero-Trust Access & MFA',
-    question: 'Which authentication mechanism provides the highest resistance against Adversary-in-the-Middle (AiTM) proxy attacks?',
+    topic: "passwords",
+    question: "Why should corporate master passwords never be reused across personal third-party web accounts?",
     options: [
-      'SMS-delivered 6-digit one-time passcodes (OTP).',
-      'Hardware-backed FIDO2 / WebAuthn security keys.',
-      'Rotating alphanumeric passwords every 30 days.',
-      'Email verification confirmation magic links.'
+      "Third-party sites notify employers of password usage",
+      "Credential stuffing attacks use breached external databases against enterprise portals",
+      "Passwords automatically expire after single-site usage",
+      "Browser autofill stops working on duplicate passwords"
     ],
-    correctAnswer: 1
+    correctAnswer: 1,
+    simpleExplanation: "When a random website gets hacked, attackers test that exact email and password combo across corporate logins.",
+    technicalExplanation: "Automated credential stuffing botnets parse plaintext combolists from third-party database breaches and execute targeted brute-force replay against Okta/Azure AD enterprise IDPs."
   },
-
-  // --- 3. Behavioral Social Defense & Pretexting (2 Questions) ---
   {
     id: 5,
-    topic: 'social_engineering',
-    domain: 'Behavioral Social Defense',
-    question: 'A caller claiming to be the CTO demands an emergency vendor wire transfer bypass because they are in an offsite executive board meeting. How do you respond?',
+    topic: "social_engineering",
+    question: "A caller claiming to be the IT Director demands your MFA code immediately to stop an ongoing breach. What do you do?",
     options: [
-      'Process the wire immediately to avoid executive reprimand.',
-      'Perform out-of-band verification using pre-established internal directory numbers.',
-      'Ask the caller for their badge number and proceed if provided.',
-      'Transfer the funds to a temporary holding account pending later review.'
+      "Read out the code quickly to prevent downtime",
+      "Refuse and verify identity via official out-of-band corporate channels",
+      "Send the code via personal WhatsApp",
+      "Change your password and give the new password instead"
     ],
-    correctAnswer: 1
+    correctAnswer: 1,
+    simpleExplanation: "Legitimate IT staff will never ask for your one-time code over the phone. Always hang up and call them back on official Slack/directory numbers.",
+    technicalExplanation: "Pretexting attacks rely on simulated authority and manufactured crisis timelines to induce cognitive overload and bypass zero-trust verification procedures."
   },
   {
     id: 6,
-    topic: 'social_engineering',
-    domain: 'Behavioral Social Defense',
-    question: 'A technician wearing vendor overalls holding heavy coffee cups asks you to hold the secured access door open behind you. What is this security risk?',
+    topic: "social_engineering",
+    question: "A delivery worker without a visible security badge holds heavy boxes and asks you to hold the secured entry door open. What is the protocol?",
     options: [
-      'Tailgating / Piggybacking physical access breach.',
-      'Credential stuffing on badge reader systems.',
-      'Buffer overflow on NFC door controllers.',
-      'Physical token sniffing.'
+      "Hold the door to be polite",
+      "Direct them to the reception desk to sign in and badge through",
+      "Ask them what company they work for and let them in",
+      "Take the package and leave them unattended in the hallway"
     ],
-    correctAnswer: 0
+    correctAnswer: 1,
+    simpleExplanation: "Holding secure doors for unbadged visitors (tailgating) bypasses all physical security check-ins.",
+    technicalExplanation: "Tailgating/piggybacking exploits social compliance norms to compromise physical perimeter boundaries without leaving an audit trail in the electronic access control system (EACS)."
   },
-
-  // --- 4. Classified Data Handling & Tokenization (2 Questions) ---
   {
     id: 7,
-    topic: 'data_handling',
-    domain: 'Classified Data Handling',
-    question: 'You want to debug proprietary codebase errors using an external generative AI chatbot. What is the compliant protocol?',
+    topic: "data_handling",
+    question: "You want to debug a proprietary customer payment script using a free public generative AI tool. What is the rule?",
     options: [
-      'Paste the whole codebase as long as comments are stripped.',
-      'Sanitize all proprietary logic, API keys, and corporate identifiers or use enterprise-isolated instances.',
-      'Sign in with a personal Gmail account to decouple company liability.',
-      'Use any chatbot provided the chat history retention switch is toggled off.'
+      "Paste the script as long as customer names are removed",
+      "Never paste proprietary code or customer PII into public non-enterprise AI models",
+      "Only use AI during non-business hours",
+      "Paste the script if you delete your chat history afterward"
     ],
-    correctAnswer: 1
+    correctAnswer: 1,
+    simpleExplanation: "Public AI tools store your inputs to train their models, which can expose private company code and customer records to the public.",
+    technicalExplanation: "Public LLM ingest pipelines retain submitted telemetry and prompt data for model fine-tuning, resulting in critical compliance violations under GDPR, HIPAA, and PCI-DSS."
   },
   {
     id: 8,
-    topic: 'data_handling',
-    domain: 'Classified Data Handling',
-    question: 'Which method should be used when transmitting high-risk Personally Identifiable Information (PII) datasets to a verified external auditor?',
+    topic: "data_handling",
+    question: "When sending an encrypted spreadsheet of internal employee salaries, how should the decryption password be shared?",
     options: [
-      'Send as an attachment via standard unencrypted email.',
-      'Upload to a personal Google Drive and share a public view-only link.',
-      'Apply tokenization / AES-256 field encryption and transmit via an authenticated SFTP / TLS portal.',
-      'Compress inside a standard zip archive with a simple 4-digit PIN.'
+      "In the same email thread as the attachment",
+      "Via a separate, out-of-band communication channel (e.g., encrypted corporate chat or phone call)",
+      "In the email subject line",
+      "Written on a sticky note attached to the recipient's monitor"
     ],
-    correctAnswer: 2
+    correctAnswer: 1,
+    simpleExplanation: "Sending the password in the same email means if someone intercepts the email, they get both the locked file and the key.",
+    technicalExplanation: "In-band key transmission compromises the cryptographic envelope. Dual-channel key distribution guarantees that single-point transport compromises do not leak ciphertext and decrypt keys simultaneously."
   },
-
-  // --- 5. Critical Incident Escalation & SOC Forensics (2 Questions) ---
   {
     id: 9,
-    topic: 'incident_reporting',
-    domain: 'Critical Incident Escalation',
-    question: 'Your workstation screen flashes an active ransomware lock warning. What is the immediate first action to take?',
+    topic: "incident_reporting",
+    question: "Your laptop suddenly displays a ransomware pop-up warning that files are being encrypted. What is your FIRST immediate step?",
     options: [
-      'Power down the PC completely using the main power strip.',
-      'Disconnect Ethernet and disable Wi-Fi while leaving the machine powered on.',
-      'Attempt to run third-party anti-malware tools from a personal USB drive.',
-      'Contact the ransomware contact email to negotiate decryptor pricing.'
+      "Restart the computer repeatedly",
+      "Disconnect Wi-Fi and unplug the Ethernet cable immediately",
+      "Pay the ransom using personal cryptocurrency",
+      "Send an email blast to all company staff"
     ],
-    correctAnswer: 1
+    correctAnswer: 1,
+    simpleExplanation: "Unplugging the network immediately stops the virus from spreading to the rest of the company while keeping computer memory intact for IT.",
+    technicalExplanation: "Severing Layer 2/3 network interfaces isolates command-and-control (C2) lateral propagation and SMB traversal while preserving volatile kernel RAM for forensic extraction."
   },
   {
     id: 10,
-    topic: 'incident_reporting',
-    domain: 'Critical Incident Escalation',
-    question: 'When should a suspected unauthorized account access event be escalated to the Security Operations Center (SOC)?',
+    topic: "incident_reporting",
+    question: "You accidentally clicked a suspicious link in an email and entered your login credentials 5 minutes ago. What should you do?",
     options: [
-      'Only after you have personally verified that data was stolen.',
-      'At the end of the work week during standard IT ticket grooming.',
-      'Immediately upon observation, following the documented Incident Response triage ladder.',
-      'Only if the incident impacts more than 10 employee accounts.'
+      "Close the browser tab and wait to see if anything strange happens",
+      "Immediately report to the SOC / Security Team and trigger a password reset",
+      "Delete the email and clear your browser cache only",
+      "Turn off your computer and leave for the day"
     ],
-    correctAnswer: 2
+    correctAnswer: 1,
+    simpleExplanation: "Reporting immediately gives the security team time to kill any active attacker sessions before damage is done.",
+    technicalExplanation: "Immediate notification enables SOC teams to revoke active session tokens, invalidate OAuth grants, and trace real-time API logs before privilege escalation occurs."
   }
 ];

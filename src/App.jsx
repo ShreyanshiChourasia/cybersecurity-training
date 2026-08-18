@@ -1,46 +1,131 @@
-import { useState } from 'react';
-import LoginModal, { DEMO_PERSONAS } from './components/LoginModal';
-import RoadmapView from './components/RoadmapView';
-import DashboardView from './components/DashboardView';
+import { useState, useEffect } from 'react';
 import QuizScreen from './components/QuizScreen';
+import RoadmapView from './components/RoadmapView';
 import WeakAreasView from './components/WeakAreasView';
-import { ShieldCheck, BookOpen, GitBranch, BarChart3, Award, Users } from 'lucide-react';
+import DashboardView from './components/DashboardView';
+import LoginModal from './components/LoginModal';
+import JudgeDrawer from './components/JudgeDrawer';
+import { 
+  ShieldCheck, 
+  Map, 
+  GraduationCap, 
+  BarChart3, 
+  Sliders, 
+  User
+} from 'lucide-react';
+
+// Persona-specific default baseline mastery profiles
+const ROLE_DEFAULT_MASTERIES = {
+  'HR Specialist': {
+    phishing: 0.35,
+    passwords: 0.45,
+    social_engineering: 0.60,
+    data_handling: 0.85,
+    incident_reporting: 0.50
+  },
+  'DevOps Lead': {
+    phishing: 0.90,
+    passwords: 0.95,
+    social_engineering: 0.40,
+    data_handling: 0.60,
+    incident_reporting: 0.80
+  },
+  'Financial Controller': {
+    phishing: 0.40,
+    passwords: 0.70,
+    social_engineering: 0.30,
+    data_handling: 0.90,
+    incident_reporting: 0.65
+  },
+  'Executive Assistant': {
+    phishing: 0.30,
+    passwords: 0.50,
+    social_engineering: 0.35,
+    data_handling: 0.45,
+    incident_reporting: 0.70
+  }
+};
+
+const DEFAULT_USER = {
+  name: 'Rivaa',
+  role: 'HR Specialist',
+  department: 'Human Resources'
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('quiz');
-  const [currentUserId, setCurrentUserId] = useState('emp_hr');
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [masteryScores, setMasteryScores] = useState({
-    phishing: 0.50,
-    passwords: 0.50,
-    social_engineering: 0.50,
-    data_handling: 0.50,
-    incident_reporting: 0.50,
+  const [isJudgeDrawerOpen, setIsJudgeDrawerOpen] = useState(false);
+  const [isBackendLive, setIsBackendLive] = useState(false);
+
+  // 1. Load active persona from localStorage
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem('adaptiq_user');
+    return savedUser ? JSON.parse(savedUser) : DEFAULT_USER;
   });
 
-  const currentUser = DEMO_PERSONAS[currentUserId] || {
-    name: 'Priya Sharma',
-    role: 'People Operations',
-    dept: 'Human Resources'
+  // 2. Load USER-SPECIFIC mastery from localStorage
+  const [masteryScores, setMasteryScores] = useState(() => {
+    const userRole = currentUser.role || 'HR Specialist';
+    const savedScores = localStorage.getItem(`adaptiq_mastery_${userRole}`);
+    return savedScores ? JSON.parse(savedScores) : (ROLE_DEFAULT_MASTERIES[userRole] || ROLE_DEFAULT_MASTERIES['HR Specialist']);
+  });
+
+  // Persist current active user
+  useEffect(() => {
+    localStorage.setItem('adaptiq_user', JSON.stringify(currentUser));
+  }, [currentUser]);
+
+  // Persist mastery changes isolated to the ACTIVE user persona
+  useEffect(() => {
+    if (currentUser?.role) {
+      localStorage.setItem(`adaptiq_mastery_${currentUser.role}`, JSON.stringify(masteryScores));
+    }
+  }, [masteryScores, currentUser]);
+
+  // Check Backend Live Status
+  useEffect(() => {
+    const checkBackend = async () => {
+      try {
+        const res = await fetch('http://localhost:8000/api/quiz', { method: 'HEAD' });
+        setIsBackendLive(res.ok);
+      } catch {
+        setIsBackendLive(false);
+      }
+    };
+    checkBackend();
+    const interval = setInterval(checkBackend, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 3. Multi-User Persona Switcher Handler
+  const handleUserLogin = (userProfile) => {
+    setCurrentUser(userProfile);
+    setIsLoginOpen(false);
+
+    // Retrieve or initialize this specific persona's scores
+    const existingScores = localStorage.getItem(`adaptiq_mastery_${userProfile.role}`);
+    if (existingScores) {
+      setMasteryScores(JSON.parse(existingScores));
+    } else {
+      const defaultRoleScores = ROLE_DEFAULT_MASTERIES[userProfile.role] || ROLE_DEFAULT_MASTERIES['HR Specialist'];
+      setMasteryScores(defaultRoleScores);
+      localStorage.setItem(`adaptiq_mastery_${userProfile.role}`, JSON.stringify(defaultRoleScores));
+    }
   };
 
   const handleSimulatePass = (topic) => {
-    setMasteryScores((prev) => ({
-      ...prev,
-      [topic]: 0.90,
-    }));
+    setMasteryScores((prev) => ({ ...prev, [topic]: 0.90 }));
   };
 
   const handleSimulateFail = (topic) => {
-    setMasteryScores((prev) => ({
-      ...prev,
-      [topic]: 0.25,
-    }));
+    setMasteryScores((prev) => ({ ...prev, [topic]: 0.25 }));
   };
 
-  const handleQuizComplete = (finalMastery) => {
-    if (finalMastery) {
-      setMasteryScores(finalMastery);
+  const handleQuizComplete = (finalScores) => {
+    setMasteryScores(finalScores);
+    if (currentUser?.role) {
+      localStorage.setItem(`adaptiq_mastery_${currentUser.role}`, JSON.stringify(finalScores));
     }
     setActiveTab('roadmap');
   };
@@ -48,89 +133,116 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
       {/* Top Navbar */}
-      <header className="border-b border-slate-800 bg-slate-900/60 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          
+          {/* Logo & Status */}
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600/20 border border-indigo-500/40 rounded-xl text-indigo-400">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <span className="font-bold text-base text-white tracking-tight">CyberAdapt</span>
-              <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full">
-                Hackathon Build
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                  AdaptIQ
+                </span>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full flex items-center gap-1 border ${
+                  isBackendLive
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${isBackendLive ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                  {isBackendLive ? 'Backend Live' : 'Offline Fallback'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 hidden sm:block">
+                Precision Security Training & Workforce Risk Mitigation
+              </p>
             </div>
           </div>
 
-          {/* User Persona Switcher */}
-          <button
-            onClick={() => setIsLoginOpen(true)}
-            className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-slate-600 text-xs text-slate-300 hover:text-white transition cursor-pointer"
-          >
-            <Users className="w-3.5 h-3.5 text-indigo-400" />
-            <span>{currentUser.name} ({currentUser.role})</span>
-            <span className="text-[10px] text-indigo-400 uppercase font-bold ml-1">Switch ▾</span>
-          </button>
-        </div>
+          {/* Connected Tabs */}
+          <nav className="flex items-center gap-1 bg-slate-950/60 p-1 rounded-2xl border border-slate-800/80">
+            <button
+              onClick={() => setActiveTab('quiz')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                activeTab === 'quiz'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">1. Diagnostic Assessment</span>
+              <span className="md:hidden">Quiz</span>
+            </button>
 
-        {/* Tab Navigation */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 border-t border-slate-800/60 pt-1">
-          <button
-            onClick={() => setActiveTab('quiz')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl transition cursor-pointer border-b-2 ${
-              activeTab === 'quiz'
-                ? 'border-indigo-500 text-indigo-400 bg-slate-900/80'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>1. Diagnostic Assessment</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('roadmap')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                activeTab === 'roadmap'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Map className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">2. Adaptive Roadmap</span>
+              <span className="md:hidden">Roadmap</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('roadmap')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl transition cursor-pointer border-b-2 ${
-              activeTab === 'roadmap'
-                ? 'border-indigo-500 text-indigo-400 bg-slate-900/80'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-            }`}
-          >
-            <GitBranch className="w-3.5 h-3.5" />
-            <span>2. Adaptive Roadmap</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('weak_areas')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                activeTab === 'weak_areas'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">3. Targeted Upskilling</span>
+              <span className="md:hidden">Courses</span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('weak_areas')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl transition cursor-pointer border-b-2 ${
-              activeTab === 'weak_areas'
-                ? 'border-indigo-500 text-indigo-400 bg-slate-900/80'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>3. Targeted Recommendations</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                activeTab === 'dashboard'
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">4. Manager Dashboard</span>
+              <span className="md:hidden">ROI</span>
+            </button>
+          </nav>
 
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-t-xl transition cursor-pointer border-b-2 ${
-              activeTab === 'dashboard'
-                ? 'border-indigo-500 text-indigo-400 bg-slate-900/80'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
-            }`}
-          >
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>4. Manager ROI Dashboard</span>
-          </button>
+          {/* User Persona & Judge Controls */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsLoginOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-xs font-semibold transition cursor-pointer"
+            >
+              <User className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="hidden sm:inline">{currentUser.name}</span>
+            </button>
+
+            <button
+              onClick={() => setIsJudgeDrawerOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold transition cursor-pointer shadow-lg shadow-amber-500/5"
+            >
+              <Sliders className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Judge Drawer</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
         {activeTab === 'quiz' && (
-          <QuizScreen
-            onCompleteQuiz={handleQuizComplete}
-            onNavigate={setActiveTab}
+          <QuizScreen 
+            onQuizComplete={handleQuizComplete} 
+            onProceedToRoadmap={() => setActiveTab('roadmap')}
           />
         )}
 
@@ -153,23 +265,30 @@ export default function App() {
         {activeTab === 'dashboard' && (
           <DashboardView
             masteryScores={masteryScores}
-            userId={currentUserId}
-            onNavigate={setActiveTab}
+            currentUser={currentUser}
+            onOpenJudgeDrawer={() => setIsJudgeDrawerOpen(true)}
           />
         )}
       </main>
 
-      {/* Login / Persona Selection Modal */}
+      {/* User Login Persona Modal */}
       {isLoginOpen && (
         <LoginModal
-          currentUserId={currentUserId}
-          onSelectUser={(id) => {
-            setCurrentUserId(id);
-            setIsLoginOpen(false);
-          }}
+          currentUser={currentUser}
+          onLogin={handleUserLogin}
           onClose={() => setIsLoginOpen(false)}
         />
       )}
+
+      {/* Global Judge Data Drawer */}
+      <JudgeDrawer
+        isOpen={isJudgeDrawerOpen}
+        onClose={() => setIsJudgeDrawerOpen(false)}
+        masteryScores={masteryScores}
+        setMasteryScores={setMasteryScores}
+        currentUser={currentUser}
+        setCurrentUser={handleUserLogin}
+      />
     </div>
   );
 }

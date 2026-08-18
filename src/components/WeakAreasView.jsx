@@ -3,10 +3,10 @@ import { RECOMMENDED_COURSES } from '../data/courseData';
 import { 
   CheckCircle2, 
   ShieldAlert, 
-  Sliders, 
-  Sparkles, 
   BookOpen, 
-  ExternalLink 
+  ExternalLink,
+  ArrowRight,
+  BarChart3
 } from 'lucide-react';
 
 const TOPIC_MAP = {
@@ -19,12 +19,9 @@ const TOPIC_MAP = {
 
 export default function WeakAreasView({ 
   masteryScores = {}, 
-  onSimulatePass, 
-  onSimulateFail, 
-  onClose = null 
+  onNavigate
 }) {
   const [completedCourses, setCompletedCourses] = useState({});
-  const [showJudgeDrawer, setShowJudgeDrawer] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const toggleCourseCompletion = (courseId) => {
@@ -43,13 +40,12 @@ export default function WeakAreasView({
     : [selectedCategory];
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-12">
-      {/* Header Banner */}
+    <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in duration-200">
       <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">
-              Targeted Remediation Engine
+              Screen 3: Targeted Remediation
             </span>
             <span className="text-xs text-slate-400 font-mono">
               {weakTopicKeys.length} Vulnerabilit{weakTopicKeys.length === 1 ? 'y' : 'ies'} Flagged
@@ -57,85 +53,20 @@ export default function WeakAreasView({
           </div>
           <h2 className="text-xl font-bold text-white">Targeted Skill Recommendations</h2>
           <p className="text-xs text-slate-400 max-w-xl">
-            Custom micro-courses tailored to close diagnosed competency gaps. Complete courses to neutralize compliance risks.
+            Custom micro-courses tailored to close diagnosed competency gaps. Mark modules complete as you progress.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowJudgeDrawer(!showJudgeDrawer)}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition cursor-pointer border ${
-              showJudgeDrawer
-                ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
-                : 'bg-slate-800/80 hover:bg-slate-800 border-slate-700 text-slate-300'
-            }`}
-          >
-            <Sliders className="w-4 h-4 text-amber-400" />
-            <span>{showJudgeDrawer ? 'Close Simulation' : 'Judge What-If'}</span>
-          </button>
-
-          {onClose && (
-            <button
-              onClick={onClose}
-              className="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold border border-slate-700 transition"
-            >
-              ✕ Close
-            </button>
-          )}
-        </div>
+        <button
+          onClick={() => onNavigate && onNavigate('dashboard')}
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl text-xs font-bold transition shadow-lg shadow-indigo-600/30 cursor-pointer flex-shrink-0"
+        >
+          <BarChart3 className="w-4 h-4" />
+          <span>View Manager ROI Dashboard</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
 
-      {/* Judge Simulation Drawer */}
-      {showJudgeDrawer && (
-        <div className="bg-gradient-to-br from-amber-950/20 via-slate-900 to-slate-900 border border-amber-500/30 p-5 rounded-3xl space-y-4 shadow-2xl animate-in fade-in duration-200">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300">
-                Live Scenario Injector (What-If Tester)
-              </h4>
-            </div>
-            <span className="text-[11px] text-slate-400">
-              Toggle topic pass/fail states to test automated course prioritization
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {Object.entries(TOPIC_MAP).map(([rawKey, label]) => {
-              const currentScore = masteryScores[rawKey] ?? 0.50;
-              const isFailing = currentScore < 0.50;
-
-              return (
-                <div key={rawKey} className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-200 truncate pr-1">{label}</span>
-                    <span className={`font-mono text-[10px] font-bold ${isFailing ? 'text-rose-400' : 'text-emerald-400'}`}>
-                      {Math.round(currentScore * 100)}%
-                    </span>
-                  </div>
-
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => onSimulateFail && onSimulateFail(rawKey)}
-                      className="flex-1 py-1 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-rose-300 text-[10px] font-bold rounded-lg transition cursor-pointer"
-                    >
-                      Gap (25%)
-                    </button>
-                    <button
-                      onClick={() => onSimulatePass && onSimulatePass(rawKey)}
-                      className="flex-1 py-1 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold rounded-lg transition cursor-pointer"
-                    >
-                      Pass (90%)
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Category Filter Buttons */}
       <div className="flex flex-wrap gap-2 items-center">
         <span className="text-xs text-slate-400 font-medium mr-1">Filter by Domain:</span>
         <button
@@ -146,7 +77,7 @@ export default function WeakAreasView({
               : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
           }`}
         >
-          All Domains ({Object.values(RECOMMENDED_COURSES).flat().length} courses)
+          All Domains
         </button>
 
         {Object.values(TOPIC_MAP).map((topicName) => {
@@ -170,7 +101,6 @@ export default function WeakAreasView({
         })}
       </div>
 
-      {/* Courses List */}
       <div className="space-y-6">
         {categoriesToDisplay.map((topicName) => {
           const courses = RECOMMENDED_COURSES[topicName] || [];
@@ -253,6 +183,16 @@ export default function WeakAreasView({
             </div>
           );
         })}
+      </div>
+
+      <div className="pt-4 flex justify-end">
+        <button
+          onClick={() => onNavigate && onNavigate('dashboard')}
+          className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white rounded-2xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-xl shadow-indigo-600/30 cursor-pointer"
+        >
+          <span>Step 4: Proceed to Manager ROI Dashboard</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );

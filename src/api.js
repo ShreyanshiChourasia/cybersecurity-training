@@ -1,5 +1,6 @@
 import { quizQuestions as mockQuiz } from './data/quizData';
 import { roadmapNodes as mockRoadmap, radarData as mockRadar } from './mockData';
+import { RECOMMENDED_COURSES as mockCourses } from './data/courseData';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
@@ -51,13 +52,13 @@ export const FALLBACK_MODULE_LESSONS = {
 async function fetchWithFallback(endpoint, fallbackData) {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500); // 2.5s timeout safeguard
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       signal: controller.signal,
       headers: { 'Content-Type': 'application/json' }
     });
-    
+
     clearTimeout(timeoutId);
 
     if (!response.ok) {
@@ -88,7 +89,14 @@ export async function getDashboardData(userId = 'emp_hr') {
   return fetchWithFallback(`/dashboard?userId=${userId}`, mockRadar);
 }
 
-// Fetch module remediation lessons & recommendations (Prevents syntax export errors)
+// Fetch module remediation lessons & recommendations
 export async function getModuleLessons() {
   return fetchWithFallback('/lessons', FALLBACK_MODULE_LESSONS);
+}
+
+// Fetch certified course catalog / weak area recommendations
+export async function getCourseRecommendations(topic = null) {
+  const endpoint = topic ? `/courses?topic=${topic}` : '/courses';
+  const fallback = topic ? (mockCourses[topic] || []) : mockCourses;
+  return fetchWithFallback(endpoint, fallback);
 }

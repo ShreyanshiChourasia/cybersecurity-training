@@ -1,314 +1,234 @@
-import { useState, useEffect } from 'react';
-import { CheckCircle2, AlertTriangle, ArrowDown, Play, ShieldAlert, Sparkles, ChevronRight, X, ExternalLink, Wifi, WifiOff } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  CheckCircle2, 
+  AlertTriangle, 
+  ArrowDown, 
+  ShieldAlert, 
+  GraduationCap,
+  Sliders,
+  Sparkles,
+  TrendingUp,
+  ArrowRight
+} from 'lucide-react';
 
-async function fetchLessonsFromBackend() {
-  try {
-    const res = await fetch('http://localhost:8000/api/lessons', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return { data, isLive: true };
-  } catch {
-    return { data: null, isLive: false };
-  }
-}
-
-// Complete 5-Scope Direct MP4 Streams (Zero embed restrictions, instant playback)
-const FALLBACK_MODULE_LESSONS = {
-  phishing: {
+const MODULES_CONFIG = [
+  {
+    topic: 'phishing',
     title: 'Phishing & Email Spoofing Defense',
-    videoFileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    courseraUrl: 'https://www.coursera.org/learn/foundations-of-cybersecurity',
-    courseraTitle: 'Google Cybersecurity: Foundations & Phishing Defense',
-    summary: 'Inspect sender SMTP headers, verify top-level domains against lookalike spoofing, and isolate suspicious attachments before executing.'
+    summary: 'Inspect sender SMTP headers, verify top-level domains, and quarantine suspicious macro-enabled payloads.',
+    courseraTitle: 'Google Cybersecurity: Foundations & Phishing Defense'
   },
-  passwords: {
+  {
+    topic: 'passwords',
     title: 'Zero-Trust Access & Hardware MFA',
-    videoFileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-    courseraUrl: 'https://www.coursera.org/learn/cyber-security-roles-processes-operating-system-security',
-    courseraTitle: 'IBM: Access Control & Zero-Trust Authentication',
-    summary: 'Enforce hardware-backed FIDO2/WebAuthn tokens over SMS OTPs to neutralize adversary-in-the-middle credential proxies.'
+    summary: 'Enforce hardware-backed FIDO2 / WebAuthn tokens to neutralize Adversary-in-the-Middle (AiTM) proxy attacks.',
+    courseraTitle: 'Zero Trust Authentication & Modern Identity Security'
   },
-  social_engineering: {
+  {
+    topic: 'social_engineering',
     title: 'Behavioral Social Defense & Pretexting',
-    videoFileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    courseraUrl: 'https://www.coursera.org/learn/social-engineering-security',
-    courseraTitle: 'Infosec: Social Engineering & Pretexting Countermeasures',
-    summary: 'Execute out-of-band verification through established corporate channels whenever emergency financial wire transfers are requested.'
+    summary: 'Enforce mandatory out-of-band verification on authority impersonation and stop physical tailgating breaches.',
+    courseraTitle: 'Social Engineering & Physical Perimeter Defense'
   },
-  data_handling: {
+  {
+    topic: 'data_handling',
     title: 'Classified Data Handling & Tokenization',
-    videoFileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
-    courseraUrl: 'https://www.coursera.org/learn/data-security-privacy',
-    courseraTitle: 'Vanderbilt: Data Privacy, Tokenization & Compliance',
-    summary: 'Mask sensitive PII and credit records prior to transit. Never paste confidential corporate datasets into unapproved public AI tools.'
+    summary: 'Sanitize proprietary codebase snippets and protect sensitive PII with AES-256 field-level encryption.',
+    courseraTitle: 'Enterprise Data Privacy & PII Compliance Standards'
   },
-  incident_reporting: {
+  {
+    topic: 'incident_reporting',
     title: 'Critical Incident Escalation & SOC Forensics',
-    videoFileUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-    courseraUrl: 'https://www.coursera.org/learn/incident-response',
-    courseraTitle: 'Google Cybersecurity: Incident Response & Escalation',
-    summary: 'Immediately disconnect network adapters to sever command-and-control communication while preserving volatile system RAM for forensics.'
+    summary: 'Sever network interfaces instantly to isolate ransomware traversal while preserving volatile RAM forensics.',
+    courseraTitle: 'Incident Response & SOC Forensic Investigation'
   }
-};
+];
 
 export default function RoadmapView({ masteryScores = {}, onSimulatePass, onSimulateFail, onNavigate }) {
-  const [selectedTopic, setSelectedTopic] = useState('phishing');
-  const [activeLesson, setActiveLesson] = useState(null);
-  const [lessonsData, setLessonsData] = useState(FALLBACK_MODULE_LESSONS);
-  const [isLiveApi, setIsLiveApi] = useState(false);
+  const [showJudgeDrawer, setShowJudgeDrawer] = useState(false);
 
-  useEffect(() => {
-    async function loadLessons() {
-      const { data, isLive } = await fetchLessonsFromBackend();
-      if (data && typeof data === 'object') {
-        setLessonsData(data);
-        setIsLiveApi(isLive);
-      }
+  const handleSimulateModuleFailure = (topic) => {
+    if (onSimulateFail) {
+      onSimulateFail(topic);
     }
-    loadLessons();
-  }, []);
-
-  const nodes = [
-    { id: 'phishing', title: '1. Phishing & Spoofing Defense', score: masteryScores.phishing ?? 0.50, desc: 'Header inspection & spear-phishing payload identification' },
-    { id: 'passwords', title: '2. Zero-Trust Access & MFA', score: masteryScores.passwords ?? 0.50, desc: 'FIDO2 security tokens, entropy, and credential rotation' },
-    { id: 'social_engineering', title: '3. Behavioral Social Defense', score: masteryScores.social_engineering ?? 0.50, desc: 'Pretexting vectors & emergency authority impersonation' },
-    { id: 'data_handling', title: '4. Classified Data Handling', score: masteryScores.data_handling ?? 0.50, desc: 'PII classification, encryption standards & exfiltration limits' },
-    { id: 'incident_reporting', title: '5. Critical Incident Escalation', score: masteryScores.incident_reporting ?? 0.50, desc: 'SOC dispatch workflows & containment forensics' }
-  ];
-
-  const getNodeStatus = (score) => {
-    if (score >= 0.80) return 'mastered';
-    if (score <= 0.25) return 'needs_remediation';
-    return 'active';
   };
 
-  const hasPrerequisiteGap = (masteryScores.phishing ?? 0.50) <= 0.25 || (masteryScores.passwords ?? 0.50) <= 0.25;
-  const failedAdvancedNode = (masteryScores.incident_reporting ?? 0.50) <= 0.25;
-  const showTraceback = failedAdvancedNode && hasPrerequisiteGap;
+  const handleSimulateModulePass = (topic) => {
+    if (onSimulatePass) {
+      onSimulatePass(topic);
+    }
+  };
 
-  const currentLessonData = lessonsData[activeLesson] || FALLBACK_MODULE_LESSONS[activeLesson];
+  const handleProceedToCourses = () => {
+    if (onNavigate) {
+      onNavigate('weak_areas');
+    }
+  };
+
+  const scoreValues = Object.values(masteryScores);
+  const avgMastery = scoreValues.length > 0
+    ? Math.round((scoreValues.reduce((a, b) => a + b, 0) / scoreValues.length) * 100)
+    : 50;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      {/* Simulator Header */}
-      <div className="bg-slate-900/80 border border-indigo-500/30 p-5 rounded-2xl shadow-xl backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
+    <div className="max-w-4xl mx-auto space-y-8 pb-12">
+      {/* Overview & Live Judge Drawer Control */}
+      <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
-            <h4 className="text-sm font-bold text-white tracking-wide">Judge "What-If" Simulator</h4>
-            {isLiveApi ? (
-              <span className="flex items-center gap-1 text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                <Wifi className="w-3 h-3" /> Live DB Links
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-[10px] font-semibold bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">
-                <WifiOff className="w-3 h-3" /> Offline Set
-              </span>
-            )}
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full">
+              Adaptive Pathway Engine
+            </span>
+            <span className="text-xs text-slate-400 font-mono">
+              Aggregate Health: <strong className={avgMastery >= 75 ? 'text-emerald-400' : 'text-amber-400'}>{avgMastery}%</strong>
+            </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">Simulate live passing/failing on any learning module</p>
+          <h2 className="text-xl font-bold text-white">Dynamic Remediation Roadmap</h2>
+          <p className="text-xs text-slate-400 max-w-xl">
+            Modules adapt dynamically according to diagnostic evaluations. Select any module to view recommended remediation coursework and partner certifications.
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <select
-            value={selectedTopic}
-            onChange={(e) => setSelectedTopic(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-indigo-500 cursor-pointer"
+        <div className="flex items-center gap-2">
+          {/* Judge What-If Simulation Trigger */}
+          <button
+            onClick={() => setShowJudgeDrawer(!showJudgeDrawer)}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-bold transition cursor-pointer border ${
+              showJudgeDrawer
+                ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
+                : 'bg-slate-800/80 hover:bg-slate-800 border-slate-700 text-slate-300'
+            }`}
           >
-            <option value="phishing">Phishing Defense</option>
-            <option value="passwords">Zero-Trust & MFA</option>
-            <option value="social_engineering">Social Defense</option>
-            <option value="data_handling">Data Handling</option>
-            <option value="incident_reporting">Incident Escalation</option>
-          </select>
+            <Sliders className="w-4 h-4 text-amber-400" />
+            <span>{showJudgeDrawer ? 'Close What-If Tool' : 'Judge What-If Simulation'}</span>
+          </button>
 
           <button
-            onClick={() => onSimulatePass(selectedTopic)}
-            className="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded-xl transition cursor-pointer"
+            onClick={() => onNavigate && onNavigate('weak_areas')}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600/20 border border-indigo-500/40 hover:bg-indigo-600/30 text-indigo-300 rounded-2xl text-xs font-bold transition cursor-pointer"
           >
-            ✓ Pass (90%)
-          </button>
-          <button
-            onClick={() => onSimulateFail(selectedTopic)}
-            className="px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold rounded-xl transition cursor-pointer"
-          >
-            ✕ Fail (25%)
+            <GraduationCap className="w-4 h-4 text-indigo-400" />
+            <span>Course Catalog</span>
           </button>
         </div>
       </div>
 
-      {/* Weakness Traceback */}
-      {showTraceback && (
-        <div className="bg-gradient-to-r from-amber-950/70 to-rose-950/70 border border-amber-500/60 p-4 rounded-2xl flex items-center gap-3.5 text-amber-200 text-xs shadow-lg animate-pulse">
-          <div className="p-2 bg-amber-500/20 rounded-xl text-amber-400 flex-shrink-0">
-            <ShieldAlert className="w-5 h-5" />
+      {/* Judge What-If Simulation Panel */}
+      {showJudgeDrawer && (
+        <div className="bg-gradient-to-br from-amber-950/20 via-slate-900 to-slate-900 border border-amber-500/30 p-5 rounded-3xl space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-3 duration-200">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300">
+                Judge Evaluation Mode: Live What-If Scenario Injector
+              </h4>
+            </div>
+            <span className="text-[11px] text-slate-400">
+              Test adaptive rerouting without retaking the diagnostic assessment
+            </span>
           </div>
-          <div>
-            <span className="font-bold uppercase tracking-wider text-amber-300 block mb-0.5">Weakness Traceback Triggered</span>
-            Incident Escalation failure traced back to foundational gaps in basic security principles. Prerequisite drills inserted.
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {MODULES_CONFIG.map((mod) => {
+              const currentScore = masteryScores[mod.topic] ?? 0.50;
+
+              return (
+                <div key={mod.topic} className="bg-slate-950/60 p-3 rounded-2xl border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-200 truncate pr-2">{mod.title.split('&')[0]}</span>
+                    <span className="font-mono text-[11px] text-indigo-400 font-bold">
+                      {Math.round(currentScore * 100)}%
+                    </span>
+                  </div>
+
+                  <div className="flex gap-1.5">
+                    <button
+                      onClick={() => handleSimulateModuleFailure(mod.topic)}
+                      className="flex-1 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/40 text-rose-300 text-[10px] font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <ShieldAlert className="w-3 h-3 text-rose-400" />
+                      Simulate Gap
+                    </button>
+                    <button
+                      onClick={() => handleSimulateModulePass(mod.topic)}
+                      className="flex-1 py-1.5 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
+                    >
+                      <TrendingUp className="w-3 h-3 text-emerald-400" />
+                      Simulate Pass
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* 5-Node Learning Tree */}
-      <div className="space-y-3 pt-2">
-        {nodes.map((node, index) => {
-          const status = getNodeStatus(node.score);
-          return (
-            <div key={node.id} className="relative">
-              {index > 0 && (
-                <div className="flex justify-center -my-2 py-1">
-                  <ArrowDown className={`w-4 h-4 ${status === 'mastered' ? 'text-emerald-500/50' : 'text-slate-700'}`} />
-                </div>
-              )}
+      {/* Adaptive Roadmap Pipeline */}
+      <div className="space-y-4 relative">
+        {MODULES_CONFIG.map((mod, idx) => {
+          const score = masteryScores[mod.topic] ?? 0.50;
+          const isMastered = score >= 0.80;
+          const isVulnerable = score < 0.50;
 
+          return (
+            <div key={mod.topic} className="flex flex-col items-center space-y-4">
               <div
-                onClick={() => status !== 'mastered' && setActiveLesson(node.id)}
-                className={`p-4 rounded-2xl border transition-all duration-300 backdrop-blur-md flex items-center justify-between gap-4 cursor-pointer ${
-                  status === 'mastered'
-                    ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-300 cursor-default'
-                    : status === 'needs_remediation'
-                    ? 'bg-rose-950/30 border-rose-500 text-rose-200 ring-1 ring-rose-500/50 hover:bg-rose-900/30'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'
+                className={`w-full p-5 rounded-3xl border transition-all duration-300 shadow-lg ${
+                  isMastered
+                    ? 'bg-slate-900/40 border-emerald-500/30 ring-1 ring-emerald-500/20'
+                    : isVulnerable
+                    ? 'bg-rose-950/20 border-rose-500/40 ring-1 ring-rose-500/30'
+                    : 'bg-slate-900/60 border-slate-800'
                 }`}
               >
-                <div className="flex items-center gap-3.5">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${
-                      status === 'mastered'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
-                        : status === 'needs_remediation'
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
-                        : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                    }`}
-                  >
-                    {status === 'mastered' && <CheckCircle2 className="w-5 h-5" />}
-                    {status === 'needs_remediation' && <AlertTriangle className="w-5 h-5" />}
-                    {status === 'active' && <Play className="w-4 h-4 fill-current ml-0.5" />}
-                  </div>
-
-                  <div>
-                    <div className="font-semibold text-sm text-slate-100 flex items-center gap-2">
-                      {node.title}
-                      {status === 'needs_remediation' && (
-                        <span className="text-[10px] font-bold uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full">
-                          Remediation Required
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1.5 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-mono text-slate-500 font-bold">MODULE 0{idx + 1}</span>
+                      {isMastered ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                          <CheckCircle2 className="w-3 h-3" /> Validated ({Math.round(score * 100)}%)
                         </span>
-                      )}
-                      {status === 'mastered' && (
-                        <span className="text-[10px] font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full">
-                          Mastered (Bypassed)
+                      ) : isVulnerable ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+                          <ShieldAlert className="w-3 h-3" /> Action Needed ({Math.round(score * 100)}%)
                         </span>
-                      )}
-                      {status === 'active' && (
-                        <span className="text-[10px] font-bold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full">
-                          Start Briefing ➔
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                          <AlertTriangle className="w-3 h-3" /> In Progress ({Math.round(score * 100)}%)
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-slate-400 mt-0.5">{node.desc}</div>
+                    <h3 className="font-bold text-sm sm:text-base text-white">{mod.title}</h3>
+                    <p className="text-xs text-slate-400 line-clamp-2">{mod.summary}</p>
                   </div>
-                </div>
 
-                <div className="text-right flex-shrink-0">
-                  <div className="text-xs font-mono font-bold text-slate-200">
-                    {(node.score * 100).toFixed(0)}%
+                  {/* Single Clean Course Action */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => handleProceedToCourses(mod.topic)}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer shadow-md ${
+                        isVulnerable
+                          ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/30'
+                          : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30'
+                      }`}
+                    >
+                      <GraduationCap className="w-3.5 h-3.5" />
+                      <span>{isVulnerable ? 'View Remediation Courses' : 'View Recommended Courses'}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <div className="text-[10px] uppercase font-semibold text-slate-500">Mastery</div>
                 </div>
               </div>
+
+              {idx < MODULES_CONFIG.length - 1 && (
+                <ArrowDown className="w-4 h-4 text-slate-700" />
+              )}
             </div>
           );
         })}
       </div>
-
-      {/* Video Modal */}
-      {activeLesson && currentLessonData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl relative">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
-                  Micro-Lesson Briefing
-                </span>
-                <h3 className="font-bold text-white text-base mt-1">
-                  {currentLessonData.title}
-                </h3>
-              </div>
-              <button
-                onClick={() => setActiveLesson(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-800 transition cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Native Unblockable HTML5 Player */}
-            <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black border border-slate-800 shadow-inner flex items-center justify-center">
-              <video
-                key={activeLesson}
-                src={currentLessonData.videoFileUrl}
-                controls
-                autoPlay
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                Your browser does not support the video tag.
-              </video>
-            </div>
-
-            <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
-              💡 <strong>Key Protocol:</strong> {currentLessonData.summary}
-            </p>
-
-            {/* Coursera Link */}
-            {currentLessonData.courseraUrl && (
-              <div className="bg-indigo-950/30 border border-indigo-500/30 p-3 rounded-xl flex items-center justify-between text-xs">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-indigo-400 block">Recommended Certification:</span>
-                  <span className="text-slate-200">{currentLessonData.courseraTitle || 'Coursera Remediation Course'}</span>
-                </div>
-                <a
-                  href={currentLessonData.courseraUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 rounded-lg flex items-center gap-1 font-semibold transition"
-                >
-                  Coursera <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            )}
-
-            {/* Validation Action */}
-            <button
-              onClick={() => {
-                onSimulatePass(activeLesson);
-                setActiveLesson(null);
-              }}
-              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 font-bold text-sm text-white rounded-xl transition cursor-pointer shadow-lg shadow-emerald-600/20"
-            >
-              Complete Lesson & Validate Mastery (90%)
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Screen Navigation */}
-      {onNavigate && (
-        <div className="pt-6 mt-4 border-t border-slate-800 flex justify-end">
-          <button
-            onClick={() => onNavigate('dashboard')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 font-bold text-sm text-white rounded-xl transition cursor-pointer shadow-lg shadow-indigo-600/20"
-          >
-            <span>View Manager ROI Dashboard</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

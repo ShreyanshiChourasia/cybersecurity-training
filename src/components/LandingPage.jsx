@@ -75,7 +75,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
     <div className="space-y-16 py-6 pb-20">
       
       {/* Hero Section */}
-      <section className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 p-8 sm:p-12 shadow-2xl">
+      <section className="relative rounded-3xl overflow-hidden bg-white border border-slate-200 p-8 sm:p-12 shadow-2xl">
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none" />
 
@@ -83,11 +83,11 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
           
           {/* SIH 2026 Header Pills */}
           <div className="inline-flex flex-wrap items-center justify-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-cyan-950 text-cyan-300 border border-cyan-700/60 flex items-center gap-1.5 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary-50 text-primary-700 border border-primary-200 flex items-center gap-1.5 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-primary-600" />
               Smart India Hackathon 2026
             </span>
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-950 text-indigo-300 border border-indigo-700/60">
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
               Problem Statement ID: SIH1409
             </span>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950 text-emerald-300 border border-emerald-700/60">
@@ -95,13 +95,13 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
             AI-Powered <span className="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Adaptive IT & Security</span> Training System
           </h1>
 
-          <p className="text-base sm:text-xl text-slate-300 font-normal max-w-3xl mx-auto leading-relaxed">
-            <strong className="text-cyan-400">AdaptIQ</strong> replaces static, time-wasting corporate LMS slides with a 
-            closed-loop <strong className="text-indigo-300">Bayesian Knowledge Tracing (BKT)</strong> engine. It pinpoints real-time competency gaps, recommends targeted micro-training, and accelerates workforce job-readiness.
+          <p className="text-base sm:text-xl text-slate-600 font-normal max-w-3xl mx-auto leading-relaxed">
+            <strong className="text-primary-600">AdaptIQ</strong> replaces static, time-wasting corporate LMS slides with a 
+            closed-loop <strong className="text-indigo-700">Bayesian Knowledge Tracing (BKT)</strong> engine. It pinpoints real-time competency gaps, recommends targeted micro-training, and accelerates workforce job-readiness.
           </p>
 
           {/* Quick CTA Actions */}
@@ -117,15 +117,15 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
 
             <button
               onClick={() => setActiveTab('roadmap')}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 hover:border-slate-600 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-slate-900 border border-slate-700 hover:border-slate-600 transition-all cursor-pointer"
             >
-              <Layers className="w-4 h-4 text-cyan-400" />
+              <Layers className="w-4 h-4 text-primary-600" />
               Explore Skill Tree
             </button>
 
             <button
               onClick={() => setActiveTab('analytics')}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-white hover:bg-slate-800 text-slate-600 border border-slate-200 hover:border-slate-700 transition-all cursor-pointer"
             >
               <TrendingUp className="w-4 h-4 text-emerald-400" />
               ROI & Radar Forecaster
@@ -133,32 +133,32 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
 
             <button
               onClick={onOpenDrawer}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-950 hover:bg-cyan-950/60 text-cyan-300 border border-cyan-800/80 transition-all cursor-pointer"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-slate-50 hover:bg-primary-50/60 text-primary-700 border border-cyan-800/80 transition-all cursor-pointer"
             >
-              <Sliders className="w-4 h-4 text-cyan-400" />
+              <Sliders className="w-4 h-4 text-primary-600" />
               Live BKT Telemetry
             </button>
           </div>
 
           {/* Value Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-slate-800/80 text-left">
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <span className="text-xs text-slate-400 block font-medium">Core Algorithm</span>
-              <span className="text-lg font-bold text-cyan-400">Bayesian BKT</span>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-slate-200/80 text-left">
+            <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200">
+              <span className="text-xs text-slate-500 block font-medium">Core Algorithm</span>
+              <span className="text-lg font-bold text-primary-600">Bayesian BKT</span>
               <span className="text-[11px] text-slate-500 block mt-0.5">Probabilistic slip & guess</span>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <span className="text-xs text-slate-400 block font-medium">Time-to-Productivity</span>
+            <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200">
+              <span className="text-xs text-slate-500 block font-medium">Time-to-Productivity</span>
               <span className="text-lg font-bold text-emerald-400">4.5 hrs Saved</span>
               <span className="text-[11px] text-slate-500 block mt-0.5">Per employee on average</span>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <span className="text-xs text-slate-400 block font-medium">Explainability</span>
-              <span className="text-lg font-bold text-indigo-400">Dual AI Modes</span>
+            <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200">
+              <span className="text-xs text-slate-500 block font-medium">Explainability</span>
+              <span className="text-lg font-bold text-indigo-600">Dual AI Modes</span>
               <span className="text-[11px] text-slate-500 block mt-0.5">Simple & Technical insights</span>
             </div>
-            <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-              <span className="text-xs text-slate-400 block font-medium">IT Sub-Domains</span>
+            <div className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200">
+              <span className="text-xs text-slate-500 block font-medium">IT Sub-Domains</span>
               <span className="text-lg font-bold text-amber-400">5 Cyber Verticals</span>
               <span className="text-[11px] text-slate-500 block mt-0.5">Phishing to Incident SLA</span>
             </div>
@@ -170,21 +170,21 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
       <section className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800 mb-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary-50 text-primary-600 border border-cyan-800 mb-2">
               <RotateCw className="w-3.5 h-3.5" />
               SIH1409 Methodology
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
               The End-to-End Adaptive Learning Loop
             </h2>
-            <p className="text-sm text-slate-400 mt-1 max-w-2xl">
+            <p className="text-sm text-slate-500 mt-1 max-w-2xl">
               Click through the 5 interconnected phases of the AdaptIQ continuous mastery cycle.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Active Step:</span>
-            <span className="text-xs font-bold text-cyan-400 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
+            <span className="text-xs text-slate-500">Active Step:</span>
+            <span className="text-xs font-bold text-primary-600 bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-700">
               {activeStep} of 5
             </span>
           </div>
@@ -200,17 +200,17 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
                 onClick={() => setActiveStep(item.step)}
                 className={`p-3.5 rounded-xl border text-left transition-all ${
                   isSelected
-                    ? 'bg-gradient-to-b from-cyan-950/80 to-slate-900 border-cyan-500 text-white shadow-lg shadow-cyan-950'
-                    : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'bg-gradient-to-b from-cyan-950/80 to-slate-900 border-cyan-500 text-slate-900 shadow-lg shadow-cyan-950'
+                    : 'bg-white/70 border-slate-200 text-slate-500 hover:border-slate-700 hover:text-slate-200'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md ${
-                    isSelected ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-400'
+                    isSelected ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-500'
                   }`}>
                     Step {item.step}
                   </span>
-                  {isSelected && <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />}
+                  {isSelected && <Sparkles className="w-3.5 h-3.5 text-primary-600 animate-pulse" />}
                 </div>
                 <div className="font-semibold text-xs text-slate-200 truncate">{item.title.split('. ')[1]}</div>
                 <div className="text-[10px] text-slate-500 truncate">{item.subtitle}</div>
@@ -223,19 +223,19 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
         {(() => {
           const current = workflowSteps.find(s => s.step === activeStep);
           return (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-xl">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div className="space-y-3 max-w-2xl">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-700/60">
+                    <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary-50 text-primary-700 border border-primary-200">
                       {current.badge}
                     </span>
-                    <span className="text-sm font-semibold text-slate-400">{current.subtitle}</span>
+                    <span className="text-sm font-semibold text-slate-500">{current.subtitle}</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{current.title}</h3>
-                  <p className="text-slate-300 text-sm leading-relaxed">{current.description}</p>
+                  <h3 className="text-2xl font-bold text-slate-900">{current.title}</h3>
+                  <p className="text-slate-600 text-sm leading-relaxed">{current.description}</p>
                   
-                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-xs text-cyan-300">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs text-primary-700">
                     {current.metrics}
                   </div>
                 </div>
@@ -252,7 +252,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
                   {current.actionTab === 'drawer' && (
                     <button
                       onClick={onOpenDrawer}
-                      className="w-full py-3 px-4 bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-700 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition"
+                      className="w-full py-3 px-4 bg-primary-50 hover:bg-cyan-900 text-primary-700 border border-cyan-700 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition"
                     >
                       Inspect Live BKT Math <Sliders className="w-4 h-4" />
                     </button>
@@ -260,7 +260,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
                   {current.actionTab === 'roadmap' && (
                     <button
                       onClick={() => setActiveTab('roadmap')}
-                      className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-indigo-600/20"
+                      className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-slate-900 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-indigo-600/20"
                     >
                       View Adaptive Skill Tree <ArrowRight className="w-4 h-4" />
                     </button>
@@ -268,7 +268,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
                   {current.actionTab === 'remediation' && (
                     <button
                       onClick={() => setActiveTab('remediation')}
-                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-emerald-600/20"
+                      className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition shadow-md shadow-emerald-600/20"
                     >
                       Open Remediation Hub <ArrowRight className="w-4 h-4" />
                     </button>
@@ -276,7 +276,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
 
                   <button
                     onClick={() => setActiveStep((prev) => (prev % 5) + 1)}
-                    className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 border border-slate-700 transition"
+                    className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-600 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 border border-slate-700 transition"
                   >
                     Next Loop Step ({activeStep === 5 ? 'Step 1' : `Step ${activeStep + 1}`}) <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -288,12 +288,12 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
       </section>
 
       {/* Traditional LMS vs AdaptIQ Comparison Matrix */}
-      <section className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 space-y-6">
+      <section className="bg-white/60 border border-slate-200 rounded-3xl p-8 space-y-6">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Why AdaptIQ Outperforms Traditional Training
           </h2>
-          <p className="text-sm text-slate-400 mt-2">
+          <p className="text-sm text-slate-500 mt-2">
             Comparison between static corporate compliance portals and our AI adaptive engine.
           </p>
         </div>
@@ -307,7 +307,7 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
                 Legacy Approach
               </span>
             </div>
-            <ul className="space-y-3 text-xs sm:text-sm text-slate-300">
+            <ul className="space-y-3 text-xs sm:text-sm text-slate-600">
               <li className="flex items-start gap-2.5">
                 <span className="text-rose-400 font-bold">✕</span>
                 <span><strong>Linear Rigid Curricula:</strong> Every employee is forced through identical 60-minute modules regardless of prior knowledge.</span>
@@ -328,13 +328,13 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
           </div>
 
           {/* AdaptIQ Engine */}
-          <div className="p-6 rounded-2xl bg-cyan-950/30 border border-cyan-800/60 space-y-4 shadow-lg shadow-cyan-950/50">
+          <div className="p-6 rounded-2xl bg-primary-50/30 border border-cyan-800/60 space-y-4 shadow-lg shadow-cyan-950/50">
             <div className="flex items-center justify-between pb-3 border-b border-cyan-800/60">
-              <h3 className="font-bold text-cyan-300 text-base flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-cyan-400" />
+              <h3 className="font-bold text-primary-700 text-base flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary-600" />
                 AdaptIQ Intelligent Training
               </h3>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-700">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary-50 text-primary-700 border border-cyan-700">
                 SIH1409 Innovation
               </span>
             </div>
@@ -363,55 +363,55 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
       {/* Technical Architecture & Stack Showcase (Slide 3) */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-950 text-indigo-400 border border-indigo-800 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-600 border border-indigo-800 mb-2">
             <Cpu className="w-3.5 h-3.5" />
             System Architecture
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
             Modern, Cloud-Ready & Explainable Stack
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Engineered for high performance, sub-second latency, and interpretable mathematical guarantees.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-primary-50 border border-cyan-800 flex items-center justify-center text-primary-600">
               <Layers className="w-5 h-5" />
             </div>
             <h4 className="font-bold text-slate-100 text-sm">Frontend Layer</h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               React 19, Tailwind CSS, Lucide icons & Recharts for reactive UI and micro-interactions.
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-800 flex items-center justify-center text-indigo-600">
               <BrainCircuit className="w-5 h-5" />
             </div>
             <h4 className="font-bold text-slate-100 text-sm">AI / ML Engine</h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Bayesian Knowledge Tracing (BKT), Cosine Vector Similarity & Rule-based Adaptive Quiz Gen.
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
               <Database className="w-5 h-5" />
             </div>
             <h4 className="font-bold text-slate-100 text-sm">Backend & APIs</h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               FastAPI async REST endpoints (/assess, /recommend, /next-quiz) backed by PostgreSQL.
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200 space-y-3">
             <div className="w-10 h-10 rounded-xl bg-amber-950 border border-amber-800 flex items-center justify-center text-amber-400">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <h4 className="font-bold text-slate-100 text-sm">Security & Analytics</h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Role-Based Access Control, HTTPS token auth, 5-axis Radar & Real-time ROI Forecaster.
             </p>
           </div>
@@ -422,17 +422,17 @@ export default function LandingPage({ setActiveTab, onOpenDrawer, onOpenAITutor,
       <section className="bg-gradient-to-r from-indigo-950/60 via-slate-900 to-cyan-950/60 border border-indigo-800/50 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
         <div className="space-y-2 max-w-2xl">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-300">Explainable AI & Tutor</span>
+            <Sparkles className="w-4 h-4 text-primary-600" />
+            <span className="text-xs font-bold uppercase tracking-wider text-primary-700">Explainable AI & Tutor</span>
           </div>
-          <h3 className="text-2xl font-bold text-white">Need Concept Clarity on Cyber Threats?</h3>
-          <p className="text-sm text-slate-300">
+          <h3 className="text-2xl font-bold text-slate-900">Need Concept Clarity on Cyber Threats?</h3>
+          <p className="text-sm text-slate-600">
             Ask our simulated AI Knowledge Coach for step-by-step explanations, attack simulations, or deep dives into the BKT math.
           </p>
         </div>
         <button
           onClick={onOpenAITutor}
-          className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 whitespace-nowrap shadow-lg shadow-indigo-600/30 transition cursor-pointer"
+          className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-slate-900 font-bold text-xs flex items-center gap-2 whitespace-nowrap shadow-lg shadow-indigo-600/30 transition cursor-pointer"
         >
           <HelpCircle className="w-4 h-4" />
           Ask AI Knowledge Coach

@@ -1,110 +1,102 @@
-import React from 'react';
-import { Shield, Sparkles, Sliders, Bot, BarChart3, Map, CheckSquare, Zap, BookOpen } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  Shield, LayoutDashboard, Crosshair, BookOpen, 
+  Radio, Map, Settings, HelpCircle, ChevronLeft, ChevronRight
+} from 'lucide-react';
 
-export default function Navbar({ 
-  activeTab, 
-  setActiveTab, 
-  onOpenDrawer, 
-  onOpenAITutor
-}) {
+export default function Navbar({ activeTab, setActiveTab, onOpenDrawer, onOpenAITutor }) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const navItems = [
+    { id: 'home', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'quiz', label: 'Adaptive Quiz', icon: Crosshair },
+    { id: 'roadmap', label: 'Learning Roadmap', icon: Map },
+    { id: 'remediation', label: 'Training Courses', icon: BookOpen },
+    { id: 'analytics', label: 'Analytics & ROI', icon: Radio },
+  ];
+
+  const bottomItems = [
+    { label: 'AI Coach', icon: HelpCircle, action: onOpenAITutor },
+    { label: 'Settings', icon: Settings, action: onOpenDrawer },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          
-          {/* Logo & Hackathon Tag */}
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setActiveTab('home')} 
-              className="flex items-center gap-2.5 group text-left focus:outline-none"
-            >
-              <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center transition-all">
-                <Shield className="w-6 h-6 text-primary-600 group-hover:scale-110 transition-transform" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-slate-800">
-                    AdaptIQ
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
-                    SIH1409
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-500 font-medium hidden sm:block">Adaptive Security Training</p>
-              </div>
-            </button>
+    <>
+      {/* Desktop Sidebar */}
+      <aside className={`hidden md:flex flex-col fixed top-0 left-0 h-screen bg-sidebar z-30 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
+        {/* Logo */}
+        <div className="flex items-center gap-3 px-5 py-6 border-b border-slate-700/50">
+          <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center shrink-0 shadow-lg shadow-primary-600/30">
+            <Shield className="w-5 h-5 text-white" />
           </div>
-
-          {/* Navigation Tabs */}
-          <nav className="hidden md:flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
-            {[
-              { id: 'home', label: 'Home / Pitch', icon: Zap },
-              { id: 'quiz', label: 'Adaptive Quiz', icon: CheckSquare },
-              { id: 'roadmap', label: 'Skill Tree', icon: Map },
-              { id: 'remediation', label: 'Remediation Hub', icon: BookOpen },
-              { id: 'analytics', label: 'Manager Dashboard', icon: BarChart3 }
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === item.id
-                    ? 'bg-primary-600 text-white shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* Quick Actions */}
-          <div className="flex items-center gap-2.5">
-            {/* AI Coach Button */}
-            <button
-              onClick={onOpenAITutor}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-sm font-medium transition-colors"
-            >
-              <Bot className="w-4 h-4" />
-              <span className="hidden sm:inline">AI Coach</span>
-            </button>
-
-            {/* Judge BKT Inspector Toggle */}
-            <button
-              onClick={onOpenDrawer}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-sm font-semibold transition-colors"
-            >
-              <Sliders className="w-4 h-4 text-slate-500" />
-              <span className="hidden sm:inline">Judge Drawer</span>
-            </button>
-          </div>
+          {!collapsed && (
+            <div className="animate-fade-in">
+              <h1 className="text-lg font-bold text-white tracking-tight">AdaptIQ</h1>
+              <p className="text-[10px] text-slate-500 font-medium uppercase tracking-widest">Security Training</p>
+            </div>
+          )}
         </div>
 
-        {/* Mobile Tab Bar */}
-        <div className="flex md:hidden overflow-x-auto py-2 gap-1 border-t border-slate-100 no-scrollbar">
-          {[
-            { id: 'home', label: 'Home', icon: Zap },
-            { id: 'quiz', label: 'Quiz', icon: CheckSquare },
-            { id: 'roadmap', label: 'Roadmap', icon: Map },
-            { id: 'remediation', label: 'Remediation', icon: BookOpen },
-            { id: 'analytics', label: 'Dashboard', icon: BarChart3 },
-          ].map((item) => (
+        {/* Nav Items */}
+        <nav className="flex-1 px-3 py-6 space-y-1">
+          {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm whitespace-nowrap ${
-                activeTab === item.id 
-                  ? 'bg-primary-600 text-white font-medium' 
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
+              className={`nav-item w-full ${activeTab === item.id ? 'active' : ''} ${collapsed ? 'justify-center px-3' : ''}`}
+              title={collapsed ? item.label : undefined}
             >
-              <item.icon className="w-4 h-4" />
-              {item.label}
+              <item.icon className="w-5 h-5 shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
+            </button>
+          ))}
+        </nav>
+
+        {/* Bottom Actions */}
+        <div className="px-3 py-4 border-t border-slate-700/50 space-y-1">
+          {bottomItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={item.action}
+              className={`nav-item w-full ${collapsed ? 'justify-center px-3' : ''}`}
+              title={collapsed ? item.label : undefined}
+            >
+              <item.icon className="w-5 h-5 shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
             </button>
           ))}
         </div>
-      </div>
-    </header>
+
+        {/* Collapse Toggle */}
+        <div className="px-3 py-3 border-t border-slate-700/50">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="nav-item w-full justify-center"
+          >
+            {collapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile Bottom Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-200 shadow-lg">
+        <div className="flex items-center justify-around py-2 px-1">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                activeTab === item.id 
+                  ? 'text-primary-600' 
+                  : 'text-slate-400 hover:text-slate-600'
+              }`}
+            >
+              <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'animate-scale-in' : ''}`} />
+              <span className="text-[10px] font-medium">{item.label.split(' ')[0]}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 }

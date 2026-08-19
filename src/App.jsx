@@ -25,7 +25,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-slate-800">
+    <div className="min-h-screen bg-background">
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
@@ -33,8 +33,11 @@ function App() {
         onOpenAITutor={() => setIsAITutorOpen(true)}
       />
 
-      <main className="flex-1 w-full mx-auto">
-        {renderView()}
+      {/* Main content area - offset by sidebar width on desktop */}
+      <main className="md:ml-64 min-h-screen pb-20 md:pb-0">
+        <div className="animate-fade-in">
+          {renderView()}
+        </div>
       </main>
       
       {/* Modals and Drawers */}

@@ -1,16 +1,8 @@
-# 🛡️ AdaptIQ — AI-Powered Adaptive IT & Cybersecurity Training System
-
-> **Smart India Hackathon (SIH) 2026**  
-> **Problem Statement ID:** `SIH1409`  
-> **Problem Statement Title:** `AI Based IT Training System`  
-> **Theme:** `Smart Education`  
-> **Category:** `Software`
-
----
+# 🛡️ AdaptIQ — Adaptive Cybersecurity Training Platform
 
 ## 📌 Executive Summary
 
-Traditional corporate Learning Management Systems (LMS) force all employees through identical, static, and linear 60-minute modules. This causes severe productivity loss for experienced staff and fails to remediate critical security knowledge gaps in vulnerable employees.
+Traditional corporate Learning Management Systems (LMS) force all employees through identical, static, and linear modules. This causes severe productivity loss for experienced staff and fails to remediate critical security knowledge gaps in vulnerable employees.
 
 **AdaptIQ** is an end-to-end intelligent training platform that implements **Bayesian Knowledge Tracing (BKT)** to model learner mastery in real-time. By continuously evaluating diagnostic assessments, accounting for lucky guesses and careless slips, AdaptIQ provides personalized micro-learning modules and generates dynamic quizzes—creating a closed-loop adaptive learning system.
 
@@ -67,12 +59,12 @@ $$\text{Next Opportunity Prior:} \quad P(L_{t+1}) = P(L_t \mid \text{Obs}) + (1 
 ```mermaid
 flowchart TB
     subgraph Client ["Frontend Layer (React 19 + Tailwind CSS)"]
-        UI1[Landing Page & Pitch Companion]
+        UI1[Landing Page & Dashboard]
         UI2[Adaptive Quiz & Confidence Meter]
         UI3[Dynamic 5-Node Skill Tree]
         UI4[Personalized Remediation Hub]
         UI5[5-Axis Competency Radar & ROI Forecaster]
-        UI6[Judge BKT Telemetry Inspector]
+        UI6[BKT Telemetry Inspector]
         UI7[AI Explainable Knowledge Coach]
     end
 
@@ -80,7 +72,7 @@ flowchart TB
         API1["/api/v1/assess (BKT Evaluation)"]
         API2["/api/v1/recommend (Course Matcher)"]
         API3["/api/v1/next-quiz (Adaptive Selector)"]
-        API4["/api/v1/telemetry (Judge Audit Stream)"]
+        API4["/api/v1/telemetry (Audit Stream)"]
     end
 
     subgraph ML ["AI / ML Engine"]
@@ -90,7 +82,7 @@ flowchart TB
         ML4[Dual Explainability Mode Engine]
     end
 
-    subgraph DB ["Database (PostgreSQL / Neon)"]
+    subgraph DB ["Database (PostgreSQL)"]
         DB1[(Users & Roles)]
         DB2[(Mastery Profiles)]
         DB3[(Questions Bank)]
@@ -116,7 +108,7 @@ flowchart TB
 ### 2. 🗺️ Dynamic 5-Node Adaptive Skill Tree (Roadmap)
 - Visual status indicators: **Mastered** ($\ge 80\%$), **Active In-Progress** ($50-79\%$), and **Needs Focus / Locked** ($<50\%$).
 - Interactive node inspector with domain curriculum and direct launch links.
-- **Simulate Remediation Jump (Judge Demo):** One-click button demonstrating real-time mastery unlock with celebratory particle confetti.
+- **Simulate Remediation Jump:** One-click button demonstrating real-time mastery unlock with celebratory particle confetti.
 
 ### 3. 📚 Personalized Remediation Hub
 - Dynamically filters courses matched to flagged weak sub-domains.
@@ -130,7 +122,7 @@ flowchart TB
   - **Financial Savings:** Quantifiable dollar return on investment.
   - **Simulated Breach Risk Reduction:** $\sim 72\%$ reduction in phishing vulnerability.
 
-### 5. ⚙️ Live Judge Telemetry Drawer
+### 5. ⚙️ Live Telemetry Drawer
 - Floating inspector button accessible from any page.
 - Displays real-time values of $P(L_0), P(T), P(S), P(G)$ per sub-domain.
 - **Live Bayes Equation Breakdown:** Step-by-step arithmetic trace plugging live numbers into the formula.
@@ -142,18 +134,7 @@ flowchart TB
 
 ---
 
-## 🎯 Feasibility, Challenges & Mitigations (SIH Slide 4)
-
-| Challenge | Impact | AdaptIQ Mitigation Strategy |
-|---|---|---|
-| **Cold Start / Limited History** | Uncertainty in new learner baseline | Initial diagnostic assessment calibrates initial $P(L_0)$ prior. |
-| **Guessing & Slipping Noise** | False positives/negatives | Mathematical $P(G)$ and $P(S)$ parameters prevent misleading mastery estimates. |
-| **Course Metadata Quality** | Mismatched recommendations | Curated skill taxonomy with cosine similarity vector tagging. |
-| **Enterprise Data Privacy** | Sensitive employee compliance logs | Role-Based Access Control (RBAC), HTTPS, and zero-PII data storage. |
-
----
-
-## 📈 Impact & Business Value (SIH Slide 5)
+## 📈 Impact & Business Value
 
 ```
                      AI-Driven Adaptive IT Training System (AdaptIQ)
@@ -180,7 +161,7 @@ Stronger IT Skills            Improved Learning Outcomes             Reduced Ski
 
 ## 💻 Tech Stack
 
-- **Frontend:** React 19, Tailwind CSS v4, Lucide React, Recharts, Canvas-Confetti
+- **Frontend:** React 19, Tailwind CSS v4, Lucide React, Recharts
 - **Build Tool:** Vite 8 (Ultra-fast HMR and bundle optimization)
 - **Backend Spec:** Python 3.11, FastAPI, Pydantic, REST/JSON
 - **Database Spec:** PostgreSQL 16 (Neon Cloud)
@@ -209,16 +190,12 @@ npm run dev
 
 ---
 
-## 🧑‍⚖️ Quick Demo Guide for SIH Hackathon Judges
+## 🧑‍⚖️ Quick Demo Guide
 
-1. **Landing Page:** Explore the **5-Step Adaptive Learning Loop Stepper** and compare Legacy LMS vs AdaptIQ.
+1. **Dashboard:** Explore the Analytics Dashboard with **5-Axis Competency Radar** and **ROI Forecaster**.
 2. **Adaptive Quiz:** Pick Question 1, move the **Confidence Slider** to $80\%$, submit answer, and observe the live BKT delta banner and dual explanation tabs.
-3. **Judge Drawer:** Click **⚙️ BKT Inspector** in the top right to verify live parameters ($P(L), P(T), P(S), P(G)$) and live Bayes equation math.
-4. **Skill Tree:** Switch to the **Skill Tree** tab and click **"Simulate Remediation Jump"** to see live node unlocking with confetti.
+3. **Data Drawer:** Click **Raw Data View** in the top right to verify live parameters.
+4. **Skill Tree:** Switch to the **Skill Tree** tab and click **"Simulate Remediation Jump"** to see live node unlocking.
 5. **Remediation Hub:** Open **Remediation Hub**, check off a course, and observe the progress bar advance while boosting domain mastery.
-6. **ROI & Radar:** Adjust the workforce sliders to see real-time calculation of employee hours and financial savings.
+6. **ROI & Radar:** Adjust the workforce sliders on the Dashboard to see real-time calculation of employee hours and financial savings.
 7. **AI Coach:** Click **🤖 AI Coach** to test explainable AI answers on cybersecurity attack vectors.
-
----
-
-*Developed for Smart India Hackathon (SIH) 2026 • Problem Statement SIH1409*

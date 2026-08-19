@@ -5,28 +5,18 @@ import { DistractorFeedback } from '../components/quiz/DistractorFeedback';
 import { MasteryBar } from '../components/quiz/MasteryBar';
 import { LoadingState } from '../components/common/LoadingState';
 import { Button } from '../components/common/Button';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Crosshair, ArrowRight } from 'lucide-react';
 
 export function Quiz({ userId = "mock_user_1" }) {
   const {
-    question,
-    loading,
-    error,
-    selectedOption,
-    setSelectedOption,
-    confidence,
-    setConfidence,
-    isSubmitted,
-    submitLoading,
-    feedback,
-    mastery,
-    submitAnswer,
-    loadNextQuestion
+    question, loading, error, selectedOption, setSelectedOption,
+    confidence, setConfidence, isSubmitted, submitLoading,
+    feedback, mastery, submitAnswer, loadNextQuestion
   } = useQuiz(userId);
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto py-12">
+      <div className="max-w-2xl mx-auto py-16 px-6">
         <LoadingState message="Preparing your adaptive quiz..." />
       </div>
     );
@@ -34,10 +24,10 @@ export function Quiz({ userId = "mock_user_1" }) {
 
   if (error) {
     return (
-      <div className="max-w-2xl mx-auto py-12">
-        <div className="p-4 bg-danger-100 text-danger-600 rounded-lg flex items-center">
-          <AlertCircle className="w-5 h-5 mr-3" />
-          <p>{error}</p>
+      <div className="max-w-2xl mx-auto py-16 px-6">
+        <div className="card p-5 bg-danger-50 text-danger-600 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <p className="text-sm">{error}</p>
         </div>
         <Button onClick={loadNextQuestion} className="mt-4">Try Again</Button>
       </div>
@@ -47,39 +37,46 @@ export function Quiz({ userId = "mock_user_1" }) {
   const currentSubdomainMastery = mastery?.mastery?.[question?.subdomain];
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">Adaptive Training</h1>
-        <p className="text-slate-500 text-sm">Your learning path is adjusting in real-time based on your performance.</p>
+    <div className="max-w-2xl mx-auto py-8 px-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4 animate-slide-right">
+        <div className="w-12 h-12 rounded-2xl bg-primary-50 flex items-center justify-center">
+          <Crosshair className="w-6 h-6 text-primary-600" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Adaptive Assessment</h1>
+          <p className="text-sm text-slate-500">Your path adjusts in real-time based on performance.</p>
+        </div>
       </div>
 
       {question && (
-        <MasteryBar 
-          subdomain={question.subdomain} 
-          mastery={currentSubdomainMastery} 
-        />
+        <div className="animate-slide-up">
+          <MasteryBar subdomain={question.subdomain} mastery={currentSubdomainMastery} />
+        </div>
       )}
 
-      <QuestionCard 
-        question={question}
-        selectedOption={selectedOption}
-        onOptionSelect={setSelectedOption}
-        confidence={confidence}
-        setConfidence={setConfidence}
-        isSubmitted={isSubmitted}
-        isCorrect={feedback?.is_correct}
-      />
+      <div className="animate-scale-in">
+        <QuestionCard 
+          question={question}
+          selectedOption={selectedOption}
+          onOptionSelect={setSelectedOption}
+          confidence={confidence}
+          setConfidence={setConfidence}
+          isSubmitted={isSubmitted}
+          isCorrect={feedback?.is_correct}
+        />
+      </div>
 
       {isSubmitted && feedback && (
-        <div className="mt-6 animate-fade-in">
-          <div className={`p-4 rounded-lg mb-6 font-semibold flex items-center ${
-            feedback.is_correct ? 'bg-success-100 text-success-600' : 'bg-danger-100 text-danger-600'
+        <div className="space-y-4 animate-slide-up">
+          <div className={`card p-4 font-semibold text-sm flex items-center gap-3 ${
+            feedback.is_correct 
+              ? 'bg-success-50 text-success-600 border-success-500/20' 
+              : 'bg-danger-50 text-danger-600 border-danger-500/20'
           }`}>
-            {feedback.is_correct ? 'Correct! Well done.' : 'Incorrect.'}
+            {feedback.is_correct ? '✓ Correct! Well done.' : '✕ Incorrect. Let\'s review.'}
           </div>
-          
           <DistractorFeedback feedback={feedback.distractor_feedback} />
-          
           <ExplanationTabs 
             techExplanation={feedback.explanation_tech}
             simpleExplanation={feedback.explanation_simple}
@@ -87,21 +84,14 @@ export function Quiz({ userId = "mock_user_1" }) {
         </div>
       )}
 
-      <div className="mt-8 flex justify-end">
+      <div className="flex justify-end pt-2">
         {!isSubmitted ? (
-          <Button 
-            onClick={submitAnswer} 
-            disabled={!selectedOption || submitLoading}
-            className="w-full sm:w-auto"
-          >
-            {submitLoading ? 'Submitting...' : 'Submit Answer'}
+          <Button onClick={submitAnswer} disabled={!selectedOption || submitLoading} className="flex items-center gap-2">
+            {submitLoading ? 'Analyzing...' : 'Submit Answer'} <ArrowRight className="w-4 h-4" />
           </Button>
         ) : (
-          <Button 
-            onClick={loadNextQuestion}
-            className="w-full sm:w-auto"
-          >
-            Continue to Next Concept
+          <Button onClick={loadNextQuestion} className="flex items-center gap-2">
+            Next Question <ArrowRight className="w-4 h-4" />
           </Button>
         )}
       </div>
